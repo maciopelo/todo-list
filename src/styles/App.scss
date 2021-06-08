@@ -1,0 +1,18 @@
+@import "./global.scss";
+
+.App{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $backgroundMain;
+    position: relative;
+    font-family: Roboto;
+}
+
+.app-name{
+    position: absolute;
+    color: $defaultOrange;
+    font-family: ZCOOL KuaiLe;
+    top: 20px;
+    left: 20px;
+}
