@@ -1,0 +1,57 @@
+.to-do-lists-container{
+
+    width:50vw;
+    
+}
+
+.to-do-lists-menu{
+    display:flex;
+    justify-content:space-between;
+
+    input{
+        font-size: 14px;
+        height:30px;
+        width:40%;
+        padding:5px 10px;
+        border-radius:6px;
+        border:none;
+        background: #FFFFFF;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+        &:focus{
+            outline: none;
+        }
+    }
+
+
+
+    select{
+        font-family: Roboto;
+        text-align-last: center;
+        appearance: none;
+        height:30px;
+        border-radius:6px;
+        width:20%;
+        background: #FFFFFF;
+    }
+
+
+
+}
+
+.to-do-lists{
+    margin-top: 50px;
+    list-style-type: none;
+    li{
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 70px;
+        border-radius: 8px;
+        color:#fff;
+        margin:20px 0px;
+        padding:10px 20px;
+        background-color: #2D2D2D;
+        
+    }
+}
