@@ -1,25 +1,14 @@
 import React, {useEffect} from 'react';
 import leftArrow from "../assets/left-arrow.svg"
-import * as yup from "yup";
 import { useHistory, Link } from "react-router-dom"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch, useSelector} from 'react-redux';
 import { clearState } from "../redux/slices/UserSlice"
 import { userRegister } from "../redux/services"
+import { registerSchema } from "../helpers"
 
 
-const validationSchema = yup.object().shape({
-    username: yup.string().required('username is required'),
-    email: yup.string().email().required('email is required'),
-    password: yup.string()
-            // .matches(
-            //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-            //   'at least 8 characters, one uppercase and one special character')
-            .required(),
-    rePassword: yup.string().oneOf([yup.ref('password'), null], 'passwords must match')
-    .required('passwords must match'),
-  });
 
 
 const Register = () => {
@@ -29,7 +18,7 @@ const Register = () => {
     const { isLoading, isLogged, isError} = useSelector(state => state.user);
     
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
-        resolver: yupResolver(validationSchema)
+        resolver: yupResolver(registerSchema)
       });
 
     const onSubmit = (data) => {
@@ -57,6 +46,7 @@ const Register = () => {
         }
       }, [isError, isLogged]);
 
+
     return (
         <div className="login-form-wrapper">
 
@@ -67,6 +57,7 @@ const Register = () => {
             <span className="login-header">Create an new account</span>
 
             <form onSubmit={handleSubmit(onSubmit)} className="login-form" >
+
                 <input placeholder="Username" type="text" {...register("username")} />
                 <p className="form-error" >{errors.username?.message}</p>
 
@@ -80,9 +71,11 @@ const Register = () => {
                 <p className="form-error" >{errors.rePassword?.message}</p>
                 
                 <button type="submit" className="login-btn">{isLoading ? 'Loading...' : "Create"}</button>
+                
             </form>
 
             {isError && <div> Error </div>}
+
 
         </div>
 

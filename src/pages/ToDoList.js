@@ -1,23 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import "../styles/ToDo.scss"
-import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux"
 import { fetchUserToDoLists } from "../redux/services"
+import Modal from "../components/Modal"
+import { parseDate } from "../helpers"
 
-
-const parseDate = (date) =>{
-    const result = date.substr(0,10).split("-")
-    return `${result[2]}-${result[1]}-${result[0]}`
-}
 
 const ToDoList = () => {
 
-    const history = useHistory();
     const dispatch = useDispatch();
-    const { email, login, todoLists} = useSelector(state => state.user);
+    const [isModal, setIsModal] = useState(false);
+    const {todoLists} = useSelector(state => state.user);
+
+
+    const handleModal = () => {
+        setIsModal(true);
+    }
+
 
     useEffect(() => {
-        dispatch(fetchUserToDoLists({ token: localStorage.getItem('token') }));
+        const token = localStorage.getItem('token')
+        dispatch(fetchUserToDoLists({ token }));
       }, []);
 
   
@@ -37,8 +40,6 @@ const ToDoList = () => {
             <ul className="to-do-lists">
              {todoLists.map(todo => {
 
-                console.log(todo)
-
                 const allTasks = todo.task.length
                 const doneTasks = todo.task.filter(task => task.isDone).length
                 const date = parseDate(todo.created_at)
@@ -46,15 +47,25 @@ const ToDoList = () => {
                  return(
                      <li key={todo.id}>
                          
-                         <span>{todo.name}</span>
-                         <span>{`Created at: ${date}`}</span>
+                         <span className="to-do-name">{todo.name}</span>
+
+                         <span className="to-do-creation-date">{`Created at: ${date}`}</span>
                          
-                         <span>{`Completed: ${doneTasks} Uncompleted: ${allTasks-doneTasks} All: ${allTasks-doneTasks}`}</span>
+                         <span className="to-do-tasks-status" >
+                             {`Completed: ${doneTasks} Uncompleted: ${allTasks-doneTasks} All: ${allTasks}`}
+                         </span>
                         
                      </li>
                  )
                  })}
+
+                <div className="add-new-to-do" onClick={handleModal}>
+                    <div className="add-new-to-do"/>
+                </div>
+                
             </ul>
+
+            {isModal && <Modal setIsModal={setIsModal}/>}
         </div>
    
     );

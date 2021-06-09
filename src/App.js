@@ -5,31 +5,8 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import ToDoList from "./pages/ToDoList"
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
-
-
-export const ProtectedRoute = ({ children, ...rest }) => {
-
-  return(
-    <Route {...rest} render={({location}) => {
-      return Boolean(localStorage.getItem("token"))
-        ? children
-        :  <Redirect to={{ pathname: '/login', state: { from: location } }} />
-      }
-    }
-    />
-  );
-  
-};
-
-export const NotFound = () => {
-
-  return(
-    <div>
-      <p>Not found</p>
-    </div>
-  );
-  
-};
+import ProtectedRoute from "./components/ProtectedRoute"
+import NotFound from "./pages/NotFound"
 
 
 export default function App() {

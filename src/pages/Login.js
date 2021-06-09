@@ -5,13 +5,8 @@ import { clearState } from "../redux/slices/UserSlice"
 import { userLogin } from "../redux/services"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
+import { loginSchema } from "../helpers"
 
-
-const validationSchema = yup.object().shape({
-    identifier: yup.string().required("email or username is required"),
-    password: yup.string().required("password is required"),
-  });
 
 const Login = () => {
 
@@ -19,9 +14,10 @@ const Login = () => {
     const dispatch = useDispatch();
     const { isLoading, isLogged, isError} = useSelector(state => state.user);
 
-    const { register, handleSubmit, reset, formState:{ errors } } = useForm({
-        resolver: yupResolver(validationSchema)
-      });
+    const { register, 
+            handleSubmit, 
+            reset, 
+            formState:{ errors } } = useForm({resolver: yupResolver(loginSchema)});
 
     
   
@@ -65,10 +61,10 @@ const Login = () => {
                 <button type="submit" className="login-btn">{isLoading ? 'Loading...' : "Login"} </button>
             </form>
 
-            <div className="login-form-option" >
-                <p>or</p>
-                <Link to="/register"> create an account </Link>
-            </div>
+            
+            <p>or</p>
+  
+            <Link to="/register" className="register-link"> create an account </Link>
 
             {isError && <div> Error </div>}
         </div>

@@ -1,8 +1,10 @@
-.to-do-lists-container{
+@import "./global.scss";
 
+.to-do-lists-container{
+    margin-top:10%;
     width:50vw;
-    
 }
+
 
 .to-do-lists-menu{
     display:flex;
@@ -21,9 +23,8 @@
         &:focus{
             outline: none;
         }
+        
     }
-
-
 
     select{
         font-family: Roboto;
@@ -35,13 +36,19 @@
         background: #FFFFFF;
     }
 
-
-
 }
 
+::placeholder {
+    color: $defaultGray;
+  }
+
+
 .to-do-lists{
+
     margin-top: 50px;
     list-style-type: none;
+    position: relative;
+
     li{
         display:flex;
         justify-content: space-between;
@@ -52,6 +59,60 @@
         margin:20px 0px;
         padding:10px 20px;
         background-color: #2D2D2D;
+
+        &:hover{
+            box-shadow: 0px 0px 5px #fff;
+            cursor: pointer;
+        }
+
+        .to-do-name{
+            font-weight: bold;
+        }
+        
+        .to-do-creation-date{
+            font-style: italic;
+        }
         
     }
+
+
+    .add-new-to-do{
+        
+        position:absolute;
+        bottom:0; 
+        right:-40px;
+
+        div{
+            &::before{
+                position:absolute;
+                content:"";
+                background-color:$defaultOrange;
+                width:3px;
+                height: 80%;
+            }
+            &::after{
+                position:absolute;
+                content:"";
+                background-color:$defaultOrange;
+                width:80%;
+                height: 3px;
+            }
+    
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            position:relative;
+            background-color: #fff;
+            width:70px;
+            height:70px;
+            border-radius:50%;
+        }
+
+        &:hover{
+            cursor: pointer;
+        }
+    }
+
 }
+
+
