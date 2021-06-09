@@ -4,13 +4,15 @@ import { useSelector, useDispatch } from "react-redux"
 import { fetchUserToDoLists } from "../redux/services"
 import Modal from "../components/Modal"
 import { parseDate } from "../helpers"
+import { sortToDoListsBy, searchToDoList } from "../redux/slices/UserSlice"
+import { SORT } from "../helpers"
 
 
 const ToDoList = () => {
 
     const dispatch = useDispatch();
     const [isModal, setIsModal] = useState(false);
-    const {todoLists} = useSelector(state => state.user);
+    const {filteredTodoLists} = useSelector(state => state.user);
 
 
     const handleModal = () => {
@@ -28,17 +30,21 @@ const ToDoList = () => {
         <div className="to-do-lists-container">
 
             <menu className="to-do-lists-menu">
-                <input placeholder="Search"/>
-                <select placeholder="Search">
-                    <option value="sort-by">Sort by</option>
-                    <option value="by-date">Date</option>
-                    <option value="alph">Alpha</option>
-                    <option value="done-task">Done tasks</option>
+                <input placeholder="Search" onChange={(e) => dispatch(searchToDoList(e.target.value))}/>
+
+                
+                <select placeholder="Search" onChange={(e)=> dispatch(sortToDoListsBy(e.target.value))}>
+                    <option value={SORT.BY_DATE}>Sort by</option> 
+                    <option value={SORT.ALPH}>alphabetically</option>
+                    <option value={SORT.BY_DONE}>by done tasks</option>
+                    <option value={SORT.BY_UNDONE}>by undone tasks</option>
                 </select>
+
+
             </menu>
 
             <ul className="to-do-lists">
-             {todoLists.map(todo => {
+             {filteredTodoLists.map(todo => {
 
                 const allTasks = todo.task.length
                 const doneTasks = todo.task.filter(task => task.isDone).length

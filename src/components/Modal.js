@@ -10,10 +10,10 @@ import {  useDispatch } from "react-redux"
 const Modal = ({setIsModal}) => {
 
     const dispatch = useDispatch();
-    const [toDoListName, setToDoListName] = useState("");
     const [tasks, setTasks] = useState([]);
-    const [newTask, setTask]  = useState({name:"", isDone:false})
     const [message, setMessage] = useState("");
+    const [toDoListName, setToDoListName] = useState("");
+    const [newTask, setTask]  = useState({name:"", isDone:false})
 
 
     const handleTaskAddition = () => {
@@ -112,7 +112,7 @@ const Modal = ({setIsModal}) => {
                     <>
                         <div className="new-task-content">
 
-                            <label class="checkbox">
+                            <label className="checkbox">
                                 <input
                                     type="checkbox"
                                     checked={newTask.isDone}
