@@ -31,7 +31,7 @@ export default function App() {
   },[])
 
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <div className="App">
 
           <div className="app-name">
