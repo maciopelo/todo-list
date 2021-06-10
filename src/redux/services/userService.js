@@ -14,12 +14,15 @@ export const userLogin = createAsyncThunk(
 
             const data = response.data
 
-            console.log(response)
-            console.log(response.status)
-            console.log(data)
+            const user = {
+                token: data.jwt,
+                email: data.user.email,
+                login: data.user.username,
+                isLogged:true
+            }
 
             if (response.status === 200) {
-                localStorage.setItem('token', data.jwt);
+                localStorage.setItem('user', JSON.stringify(user));
                 return { ...data };
             } else {
                 return thunkAPI.rejectWithValue(...data);
@@ -46,12 +49,16 @@ export const userRegister = createAsyncThunk(
 
             const data = response.data
 
-            console.log(response)
-            console.log(response.status)
-            console.log(data)
+            const user = {
+                token: data.jwt,
+                email: data.user.email,
+                login: data.user.username,
+                isLogged:true
+            }
+
 
             if (response.status === 200) {
-                localStorage.setItem('token', data.jwt);
+                localStorage.setItem('user', JSON.stringify(user));
                 return { ...data };
             } else {
                 console.log('Error', response.status);
@@ -71,22 +78,18 @@ export const userRegister = createAsyncThunk(
 export const fetchUserToDoLists = createAsyncThunk(
     "user/todos",
 
-    async ({ token }, thunkAPI) => {
+    async ({ foundUserToken }, thunkAPI) => {
 
-
+  
         try {
 
             const response = await axios.get("to-do-lists",{
                 headers: {
-                    Authorization: "Bearer " + token
+                    Authorization: "Bearer " + foundUserToken
                 }
             });
 
             const data = response.data
-
-            console.log(response)
-            console.log(data)
-
             if (response.status === 200) {
                 return data;
             } else {

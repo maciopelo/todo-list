@@ -2,17 +2,18 @@ import React from 'react';
 import { ImBin } from 'react-icons/im';
 
 
-const Task = ({task, onChange, remove}) => {
+const Task = ({task, onChange, remove, disabled}) => {
 
     return (
         <div>
             <div className="new-task-content">
          
-                <label class="checkbox">
+                <label className="checkbox">
                     <input 
                         type="checkbox"
                         checked={task.isDone}
                         onChange={onChange}
+                        disabled={disabled}
                     />
                     <span/>
                 </label>
@@ -23,7 +24,7 @@ const Task = ({task, onChange, remove}) => {
                     value={task.name}
                     disabled
                 />
-                <ImBin className="remove-btn"onClick={remove} />
+                {!disabled && <ImBin className="remove-btn"onClick={remove} />}
             </div>
 
         </div>  

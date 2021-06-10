@@ -12,7 +12,7 @@ const Login = () => {
 
     let history = useHistory();
     const dispatch = useDispatch();
-    const { isLoading, isLogged, isError} = useSelector(state => state.user);
+    const { isLoading, isLogged, isError, errorMsg} = useSelector(state => state.user);
 
     const { register, 
             handleSubmit, 
@@ -36,7 +36,7 @@ const Login = () => {
     useEffect(() => {
         reset()
         if (isError) {
-            setTimeout(() => dispatch(clearState()), 5000)
+            setTimeout(() => dispatch(clearState()), 3500)
         }
     
         if (isLogged) {
@@ -66,7 +66,7 @@ const Login = () => {
   
             <Link to="/register" className="register-link"> create an account </Link>
 
-            {isError && <div> Error </div>}
+            {isError && <div> {errorMsg} </div>}
         </div>
 
     );

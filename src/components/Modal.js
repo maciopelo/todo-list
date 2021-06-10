@@ -1,19 +1,35 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import "../styles/Modal.scss"
 import Task from "../components/Task"
 import axios from "../redux/services/config"
 import { fetchUserToDoLists } from "../redux/services"
-import {  useDispatch } from "react-redux"
+import {  useDispatch, useSelector } from "react-redux"
 
 
-
-const Modal = ({setIsModal}) => {
+const Modal = ({setIsModal, chosenToDoIdx}) => {
 
     const dispatch = useDispatch();
-    const [tasks, setTasks] = useState([]);
-    const [message, setMessage] = useState("");
+    const {filteredTodoLists} = useSelector(state => state.user);
+
     const [toDoListName, setToDoListName] = useState("");
+    const [tasks, setTasks] = useState([]);
+
+    const [message, setMessage] = useState("");
     const [newTask, setTask]  = useState({name:"", isDone:false})
+    
+    // state variable used only for static blocking modal inputs/buttons
+    const [disabled, setDisabled] = useState(chosenToDoIdx !== -1 ? true : false)
+
+
+    useEffect(() => {
+
+        if(chosenToDoIdx !== -1){
+            const {name, task} = filteredTodoLists[chosenToDoIdx]
+            setToDoListName(name)
+            setTasks(task)
+        }
+
+    },[filteredTodoLists])
 
 
     const handleTaskAddition = () => {
@@ -51,20 +67,27 @@ const Modal = ({setIsModal}) => {
     const hadleToDoSave = async () => {
         if(Boolean(toDoListName.match(/^(?!\s*$).+/))){
 
-            const token = localStorage.getItem('token')
+            const loggedInUser = localStorage.getItem("user");
+            const foundUserToken = JSON.parse(loggedInUser).token;
 
             const data = {
                 name:toDoListName,
                 task:tasks
             }
-    
-            const response = await axios.post("to-do-lists", data, {
-                headers: {
-                    Authorization:"Bearer " + token
-                }
-            })
 
-            dispatch(fetchUserToDoLists({ token }));
+            try{
+
+                await axios.post("to-do-lists", data, {
+                    headers: {
+                        Authorization:"Bearer " + foundUserToken
+                    }
+                })
+
+            }catch(e){
+                console.log("Error "+e.response.data)
+            }
+            
+            dispatch(fetchUserToDoLists({ foundUserToken }));
             handleClear();
             handleMessage("New todo list has been added");
 
@@ -74,7 +97,8 @@ const Modal = ({setIsModal}) => {
     }
 
     const handleExistingTaskState = (idx) => {
-        const newTasks = [...tasks]
+        
+        let newTasks = [...tasks]
         newTasks[idx].isDone = !newTasks[idx].isDone
         setTasks(newTasks)
     }
@@ -93,6 +117,7 @@ const Modal = ({setIsModal}) => {
                     placeholder="List name"
                     value={toDoListName}
                     onChange={(e) => setToDoListName(e.target.value)}
+                    disabled={disabled}
                 />
 
                 <div className="divider"/>
@@ -105,11 +130,12 @@ const Modal = ({setIsModal}) => {
                                 task={task}
                                 onChange={() => handleExistingTaskState(idx)}
                                 remove={() => handleTaskRemove(idx)}
+                                disabled={disabled}
                             />
                         ))}
                     </ul>
 
-                    <>
+                    { !disabled && <>
                         <div className="new-task-content">
 
                             <label className="checkbox">
@@ -140,14 +166,14 @@ const Modal = ({setIsModal}) => {
                                 onClick={handleTaskAddition}
                             >Add</button>
                         </div>
-                    </> 
+                    </> }
                             
                 </div>
 
                 <div className="modal-footer">
                     <p className="modal-close" onClick={handleModalClose} >Cancel</p>
                     { Boolean(message) && <p className="modal-message">{message}</p>}
-                    <button className="save-todo-btn"onClick={hadleToDoSave}>Save</button>
+                    { !disabled && <button className="save-todo-btn"onClick={hadleToDoSave}>Save</button> }
                 </div>
             </div>
         </div>

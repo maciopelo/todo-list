@@ -23,22 +23,33 @@ export const userSlice = createSlice({
         clearState: state => {
 
             state.isLoading = false;
-            state.isLogged = false;
             state.isError = false;
             state.errorMsg = "";
 
             return state;
         },
 
+        cleanWholeState: state => {
+
+            state.email = "";
+            state.login = "";
+            state.isLoading = false;
+            state.isLogged = false;
+            state.isError = false;
+            state.errorMsg = "";
+            state.todoLists = [];
+            state.filteredTodoLists = [];
+        },
+
         sortToDoListsBy: (state, {payload}) => {
 
             switch(payload){
                 case SORT.ALPH:{
-                    state.todoLists.sort((a,b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1)
+                    state.filteredTodoLists.sort((a,b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1)
                     break
                 }
                 case SORT.BY_DONE:{
-                    state.todoLists.sort((a,b) => {
+                    state.filteredTodoLists.sort((a,b) => {
 
                         const aDoneTasks = a.task.filter(task => task.isDone).length
                         const bDoneTasks = b.task.filter(task => task.isDone).length
@@ -48,7 +59,7 @@ export const userSlice = createSlice({
                     break
                 }
                 case SORT.BY_UNDONE:{
-                    state.todoLists.sort((a,b) => {
+                    state.filteredTodoLists.sort((a,b) => {
 
                         const aUdoneTasks = a.task.filter(task => !task.isDone).length
                         const bUnoneTasks = b.task.filter(task => !task.isDone).length
@@ -59,7 +70,7 @@ export const userSlice = createSlice({
                 }
 
                 default:{
-                    state.todoLists.sort((a,b) => a.created_at < b.created_at ? 1 : -1)
+                    state.filteredTodoLists.sort((a,b) => a.created_at < b.created_at ? 1 : -1)
                     break
                 }
 
@@ -68,9 +79,17 @@ export const userSlice = createSlice({
 
         searchToDoList: (state, {payload}) => {
             if(payload.length > 0)
-                state.filteredTodoLists = state.todoLists.filter( task => task.name.search(payload) !== -1 && task )
+                state.filteredTodoLists = state.todoLists.filter( task => task.name.toLowerCase().search(payload) !== -1 && task )
             else
                 state.filteredTodoLists = state.todoLists
+        },
+
+        setPreviouslyLoggedUser: (state, {payload} ) => {
+
+            state.email = payload.email;
+            state.login = payload.login;
+            state.isLogged = true;
+
         }
 
     },
@@ -78,7 +97,6 @@ export const userSlice = createSlice({
     extraReducers: {
 
         [userLogin.fulfilled]: (state, {payload} ) => {
-            console.log("fullfiled")
             state.email = payload.user.email;
             state.login = payload.user.username;
             state.isLoading = false;
@@ -87,12 +105,10 @@ export const userSlice = createSlice({
         },
 
         [userLogin.pending]: (state) => {
-            console.log("pending")
             state.isLoading = true;
         },
 
         [userLogin.rejected]: (state, {payload} ) => {
-            console.log("rejected")
             state.isLoading = false;
             state.isLogged = false;
             state.isError = true;
@@ -101,7 +117,6 @@ export const userSlice = createSlice({
         },
 
         [userRegister.fulfilled]: (state, {payload} ) => {
-            console.log("fullfiled")
             state.email = payload.user.email;
             state.login = payload.user.username;
             state.isLoading = false;
@@ -110,12 +125,10 @@ export const userSlice = createSlice({
         },
 
         [userRegister.pending]: (state) => {
-            console.log("pending")
             state.isLoading = true;
         },
 
         [userRegister.rejected]: (state, {payload} ) => {
-            console.log("rejected")
             state.isLoading = false;
             state.isLogged = false;
             state.isError = true;
@@ -124,19 +137,16 @@ export const userSlice = createSlice({
         },
 
         [fetchUserToDoLists.fulfilled] : (state, {payload}) => {
-            console.log("fullfiled")
             state.isLoading = false;
             state.todoLists = payload
             state.filteredTodoLists = payload
         },
 
         [fetchUserToDoLists.pending] : (state) => {
-            console.log("pending")
             state.isLoading = true;
         },
 
         [fetchUserToDoLists.rejected] : (state) => {
-            console.log("rejected")
             state.isLoading = false;
         }
 
@@ -146,5 +156,5 @@ export const userSlice = createSlice({
 
 
 const {reducer, actions} = userSlice;
-export const { clearState, sortToDoListsBy, searchToDoList } = actions;
+export const { clearState, cleanWholeState, sortToDoListsBy, searchToDoList, setPreviouslyLoggedUser } = actions;
 export default reducer;

@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import leftArrow from "../assets/left-arrow.svg"
+import leftArrowIcon from "../assets/left-arrow.svg"
 import { useHistory, Link } from "react-router-dom"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,7 +15,7 @@ const Register = () => {
 
     let history = useHistory();
     const dispatch = useDispatch();
-    const { isLoading, isLogged, isError} = useSelector(state => state.user);
+    const { isLoading, isLogged, isError, errorMsg} = useSelector(state => state.user);
     
     const { register, handleSubmit, reset, formState:{ errors } } = useForm({
         resolver: yupResolver(registerSchema)
@@ -51,7 +51,7 @@ const Register = () => {
         <div className="login-form-wrapper">
 
             <Link to="/login">
-              <img className="back-to-login" src={leftArrow} alt="left-arrow" />
+              <img className="back-to-login" src={leftArrowIcon} alt="left-arrow" />
             </Link>
 
             <span className="login-header">Create an new account</span>
@@ -74,7 +74,7 @@ const Register = () => {
                 
             </form>
 
-            {isError && <div> Error </div>}
+            {isError && <div> {errorMsg} </div>}
 
 
         </div>

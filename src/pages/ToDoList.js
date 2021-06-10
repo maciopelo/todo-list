@@ -12,46 +12,55 @@ const ToDoList = () => {
 
     const dispatch = useDispatch();
     const [isModal, setIsModal] = useState(false);
+    const [chosenToDoIdx, setChosenToDoIdx] = useState(-1);
     const {filteredTodoLists} = useSelector(state => state.user);
 
 
-    const handleModal = () => {
+    const handleNewTodo = () => {
+        setChosenToDoIdx(-1);
+        setIsModal(true);
+    }
+
+    const handleExistingTodoClick = (idx) =>{
+        setChosenToDoIdx(idx)
         setIsModal(true);
     }
 
 
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        dispatch(fetchUserToDoLists({ token }));
+        const loggedInUser = localStorage.getItem('user')
+        const foundUserToken = JSON.parse(loggedInUser).token;
+        dispatch(fetchUserToDoLists({ foundUserToken }));
       }, []);
 
   
     return ( 
         <div className="to-do-lists-container">
 
+             
             <menu className="to-do-lists-menu">
-                <input placeholder="Search" onChange={(e) => dispatch(searchToDoList(e.target.value))}/>
+            <input placeholder="Search" onChange={(e) => dispatch(searchToDoList(e.target.value))}/>
 
-                
-                <select placeholder="Search" onChange={(e)=> dispatch(sortToDoListsBy(e.target.value))}>
-                    <option value={SORT.BY_DATE}>Sort by</option> 
-                    <option value={SORT.ALPH}>alphabetically</option>
-                    <option value={SORT.BY_DONE}>by done tasks</option>
-                    <option value={SORT.BY_UNDONE}>by undone tasks</option>
-                </select>
-
+            <select placeholder="Search" onChange={(e)=> dispatch(sortToDoListsBy(e.target.value))}>
+                <option value={SORT.BY_DATE}>Sort by</option> 
+                <option value={SORT.ALPH}>alphabetically</option>
+                <option value={SORT.BY_DONE}>by done tasks</option>
+                <option value={SORT.BY_UNDONE}>by undone tasks</option>
+            </select>
 
             </menu>
+            
+            
 
             <ul className="to-do-lists">
-             {filteredTodoLists.map(todo => {
+             {filteredTodoLists.map((todo,idx) => {
 
                 const allTasks = todo.task.length
                 const doneTasks = todo.task.filter(task => task.isDone).length
                 const date = parseDate(todo.created_at)
 
                  return(
-                     <li key={todo.id}>
+                     <li key={todo.id} onClick={() => handleExistingTodoClick(idx)}>
                          
                          <span className="to-do-name">{todo.name}</span>
 
@@ -65,13 +74,15 @@ const ToDoList = () => {
                  )
                  })}
 
-                <div className="add-new-to-do" onClick={handleModal}>
-                    <div className="add-new-to-do"/>
-                </div>
-                
+            <div className="add-new-to-do" onClick={handleNewTodo}>
+                <div className="add-new-to-do"/>
+            </div>
+
             </ul>
 
-            {isModal && <Modal setIsModal={setIsModal}/>}
+            {isModal && <Modal setIsModal={setIsModal} chosenToDoIdx={chosenToDoIdx}/>}
+
+            
         </div>
    
     );

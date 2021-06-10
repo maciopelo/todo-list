@@ -16,3 +16,26 @@
     top: 20px;
     left: 20px;
 }
+
+.logout-button{
+    position: fixed;
+    top: 0;
+    right: 0;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    .right-arrow-icon{
+        height: 25px;
+        position: absolute;
+        right:15px;
+        top: 38px;
+    }
+    .door-icon{
+        height:60px;
+        position: absolute;
+        right: 35px;
+        top: 25px;
+    }
+}
