@@ -9,7 +9,8 @@ const Task = ({task, onChange, remove, disabled}) => {
             <div className="new-task-content">
          
                 <label className="checkbox">
-                    <input 
+                    <input
+                        data-testid="task-checkbox"
                         type="checkbox"
                         checked={task.isDone}
                         onChange={onChange}
@@ -24,7 +25,7 @@ const Task = ({task, onChange, remove, disabled}) => {
                     value={task.name}
                     disabled
                 />
-                {!disabled && <ImBin className="remove-btn"onClick={remove} />}
+                {!disabled && <ImBin className="remove-btn" onClick={remove} />}
             </div>
 
         </div>  

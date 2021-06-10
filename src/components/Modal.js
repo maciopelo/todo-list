@@ -125,7 +125,7 @@ const Modal = ({setIsModal, chosenToDoIdx}) => {
                 <div className="todo-tasks">
                     <ul>
                         {tasks.map((task,idx) => (
-                            <Task 
+                            <Task
                                 key={idx}
                                 task={task}
                                 onChange={() => handleExistingTaskState(idx)}
