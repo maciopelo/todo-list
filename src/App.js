@@ -20,7 +20,7 @@ export default function App() {
   }, [dispatch]);
 
   return (
-    <Router basename={process.env.PUBLIC_URL}>
+    <Router>
       <div className="App">
         <Header />
         <Switch>
