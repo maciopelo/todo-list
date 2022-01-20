@@ -30,6 +30,12 @@ export const userSlice = createSlice({
       return state;
     },
 
+    clearErrorMsg: (state) => {
+      state.errorMsg = "";
+
+      return state;
+    },
+
     cleanWholeState: (state) => {
       state.email = "";
       state.login = "";
@@ -168,6 +174,7 @@ export const userSlice = createSlice({
 const { reducer, actions } = userSlice;
 export const {
   clearState,
+  clearErrorMsg,
   cleanWholeState,
   sortToDoListsBy,
   searchToDoList,

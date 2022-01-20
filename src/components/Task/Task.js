@@ -1,11 +1,12 @@
 import React from "react";
 import { ImBin } from "react-icons/im";
+import styles from "../Modal/Modal.module.scss";
 
 const Task = ({ task, onChange, remove, disabled }) => {
   return (
     <div>
-      <div className="new-task-content">
-        <label className="checkbox">
+      <div className={styles.newTaskContent}>
+        <label className={styles.checkbox}>
           <input
             data-testid="task-checkbox"
             type="checkbox"
@@ -16,7 +17,7 @@ const Task = ({ task, onChange, remove, disabled }) => {
         </label>
 
         <input type="text" placeholder="Task name" value={task.name} disabled />
-        {!disabled && <ImBin className="remove-btn" onClick={remove} />}
+        {!disabled && <ImBin className={styles.removeBtn} onClick={remove} />}
       </div>
     </div>
   );

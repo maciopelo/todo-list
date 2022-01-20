@@ -1,0 +1,54 @@
+@import "../../styles/variables.scss";
+
+.todosContainer {
+  display: flex;
+
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20vh;
+  width: 100%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 10px;
+}
+
+.todosListList {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.newTodoButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  background-color: #fff;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  right: 2%;
+  bottom: 2%;
+
+  &::before {
+    position: absolute;
+    content: "";
+    background-color: $defaultOrange;
+    width: 3px;
+    height: 80%;
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    background-color: $defaultOrange;
+    width: 80%;
+    height: 3px;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}

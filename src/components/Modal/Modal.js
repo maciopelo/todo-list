@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import "../styles/Modal.scss";
-import Task from "../components/Task";
-import axios from "../redux/services/config";
-import { fetchUserToDoLists } from "../redux/services";
+import styles from "./Modal.module.scss";
+import Task from "../Task/Task";
+import axios from "../../redux/services/config";
+import { fetchUserToDoLists } from "../../redux/services";
 import { useDispatch, useSelector } from "react-redux";
 
 const Modal = ({ setIsModal, chosenToDoId, isNewTodoModal }) => {
@@ -85,12 +85,16 @@ const Modal = ({ setIsModal, chosenToDoId, isNewTodoModal }) => {
               Authorization: "Bearer " + foundUserToken,
             },
           });
+
+          handleMessage("New todo list has been added");
         } else {
           await axios.put(`to-do-lists/${chosenToDoId}`, data, {
             headers: {
               Authorization: "Bearer " + foundUserToken,
             },
           });
+
+          handleMessage("Todo list has been updated");
         }
       } catch (e) {
         console.log("Error " + e.response.data);
@@ -98,7 +102,6 @@ const Modal = ({ setIsModal, chosenToDoId, isNewTodoModal }) => {
 
       dispatch(fetchUserToDoLists({ foundUserToken }));
       handleClear();
-      handleMessage("New todo list has been added");
     }
   };
 
@@ -118,19 +121,19 @@ const Modal = ({ setIsModal, chosenToDoId, isNewTodoModal }) => {
   };
 
   return (
-    <div className="modal-container">
-      <div className="modal-content">
+    <div className={styles.modalContainer}>
+      <div className={styles.modalContent}>
         <input
-          className="new-todo-name"
+          className={styles.newTodoName}
           type="text"
           placeholder="List name"
           value={toDoListName}
           onChange={(e) => setToDoListName(e.target.value)}
         />
 
-        <div className="divider" />
+        <div className={styles.divider} />
 
-        <div className="todo-tasks">
+        <div className={styles.todoTasks}>
           <ul>
             {tasks.map((task, idx) => (
               <Task
@@ -144,8 +147,8 @@ const Modal = ({ setIsModal, chosenToDoId, isNewTodoModal }) => {
           </ul>
           {isNewTodoModal && (
             <>
-              <div className="new-task-content">
-                <label className="checkbox">
+              <div className={styles.newTaskContent}>
+                <label className={styles.checkbox}>
                   <input
                     type="checkbox"
                     checked={newTask.isDone}
@@ -162,15 +165,18 @@ const Modal = ({ setIsModal, chosenToDoId, isNewTodoModal }) => {
                 />
               </div>
 
-              <div className="add-new-task-menu">
+              <div className={styles.addNewTaskName}>
                 <button
-                  className="cancel-new-todo"
+                  className={styles.cancelNewTodo}
                   onClick={() => setTask({ name: "", isDone: false })}
                 >
                   Cancel
                 </button>
 
-                <button className="add-new-todo" onClick={handleTaskAddition}>
+                <button
+                  className={styles.addNewTodo}
+                  onClick={handleTaskAddition}
+                >
                   Add
                 </button>
               </div>
@@ -178,13 +184,13 @@ const Modal = ({ setIsModal, chosenToDoId, isNewTodoModal }) => {
           )}
         </div>
 
-        <div className="modal-footer">
-          <p className="modal-close" onClick={handleModalClose}>
+        <div className={styles.modalFooter}>
+          <p className={styles.modalClose} onClick={handleModalClose}>
             Cancel
           </p>
-          {Boolean(message) && <p className="modal-message">{message}</p>}
+          {Boolean(message) && <p className={styles.modalMessage}>{message}</p>}
 
-          <button className="save-todo-btn" onClick={hadleToDoSave}>
+          <button className={styles.saveTodoBtn} onClick={hadleToDoSave}>
             Save
           </button>
         </div>

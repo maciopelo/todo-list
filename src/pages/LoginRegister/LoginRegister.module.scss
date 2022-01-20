@@ -1,0 +1,120 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixins.scss";
+
+.loginFormWrapper {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  background-color: $defaultGray;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+  margin: 20vh auto;
+  padding: 10px 20px;
+  padding-top: 30px;
+}
+
+.backToLogin {
+  position: absolute;
+  transform: scale(0.7);
+  top: 15px;
+  left: 15px;
+}
+
+.loginHeader {
+  color: $defaultOrange;
+  font-size: 40px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+
+  @include tiny {
+    font-size: 32px;
+  }
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 85%;
+
+  @include tiny {
+    width: 95%;
+  }
+
+  & > div {
+    width: 100%;
+    position: relative;
+    margin-bottom: 30px;
+  }
+
+  input {
+    font-size: 14px;
+    height: 30px;
+    width: 100%;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: none;
+    background: #fff;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    transition: 0.2s;
+
+    @include tiny {
+      font-size: 12px;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0px 0px 5px #fff;
+    }
+  }
+}
+
+.registerLink {
+  text-decoration: none;
+  color: $defaultOrange;
+  font-size: 2rem;
+  font-weight: 300;
+}
+
+.loginBtn {
+  height: 40px;
+  width: 120px;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 5px;
+  border: 0px;
+  border-radius: 8px;
+  background-color: $defaultOrange;
+  color: #fff;
+  margin-top: 20px;
+  transition: 0.2s;
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 10px rgb(218, 218, 218);
+  }
+}
+
+.formError {
+  position: absolute;
+  font-size: 10px;
+  color: rgb(252, 34, 34);
+  bottom: -12px;
+  left: 10px;
+}
+
+.infoMessage {
+  height: 30px;
+  color: rgb(223, 78, 25);
+}
+
+.orSeparator {
+  display: block;
+  margin: 10px 0;
+}

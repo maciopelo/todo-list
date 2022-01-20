@@ -1,0 +1,32 @@
+@import "../../styles/variables.scss";
+
+.header {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  top: 0;
+  width: 100%;
+  height: 100px;
+  padding: 20px;
+  background-color: $backgroundMain;
+}
+
+.logo {
+  color: #ff9900;
+  font-family: ZCOOL KuaiLe;
+}
+
+.logout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  img {
+    height: 60px;
+    width: 100%;
+  }
+}
