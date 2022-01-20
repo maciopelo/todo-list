@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "http://localhost:1337/",
+  baseURL: "https://maciopelo-todo-list-strapi.herokuapp.com/",
   timeout: 1000,
 });
