@@ -1,4 +1,4 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -7,11 +7,14 @@
 @font-face {
   font-family: "ZCOOL KuaiLe";
   src: local("ZCOOL KuaiLe"),
-   url("./fonts/ZCOOL_KuaiLe/ZCOOLKuaiLe-Regular.ttf") format("truetype");
+    url("./fonts/ZCOOL_KuaiLe/ZCOOLKuaiLe-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
-html, body, #root, .App {
+html,
+body,
+#root,
+.App {
   min-height: 100vh;
 }

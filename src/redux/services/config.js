@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
 export default axios.create({
-    baseURL: 'https://recruitment.ultimate.systems/',
-    timeout: 1000,
-  });
+  baseURL: "http://localhost:1337/",
+  timeout: 1000,
+});

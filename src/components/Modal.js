@@ -1,183 +1,196 @@
-import React, {useState, useEffect} from 'react';
-import "../styles/Modal.scss"
-import Task from "../components/Task"
-import axios from "../redux/services/config"
-import { fetchUserToDoLists } from "../redux/services"
-import {  useDispatch, useSelector } from "react-redux"
+import React, { useState, useEffect } from "react";
+import "../styles/Modal.scss";
+import Task from "../components/Task";
+import axios from "../redux/services/config";
+import { fetchUserToDoLists } from "../redux/services";
+import { useDispatch, useSelector } from "react-redux";
 
+const Modal = ({ setIsModal, chosenToDoId, isNewTodoModal }) => {
+  const dispatch = useDispatch();
+  const { filteredTodoLists } = useSelector((state) => state.user);
 
-const Modal = ({setIsModal, chosenToDoIdx}) => {
+  const [toDoListName, setToDoListName] = useState("");
+  const [tasks, setTasks] = useState([]);
 
-    const dispatch = useDispatch();
-    const {filteredTodoLists} = useSelector(state => state.user);
+  const [message, setMessage] = useState("");
+  const [newTask, setTask] = useState({ name: "", isDone: false });
 
-    const [toDoListName, setToDoListName] = useState("");
-    const [tasks, setTasks] = useState([]);
+  useEffect(() => {
+    if (!isNewTodoModal) {
+      const todoList = filteredTodoLists.filter(
+        (list) => list.id === chosenToDoId
+      )[0];
+      setToDoListName(todoList.name);
+      setTasks(todoList.tasks);
+    }
+  }, [filteredTodoLists, chosenToDoId, isNewTodoModal]);
 
-    const [message, setMessage] = useState("");
-    const [newTask, setTask]  = useState({name:"", isDone:false})
-    
-    // state variable used only for static blocking modal inputs/buttons
-    const [disabled, setDisabled] = useState(chosenToDoIdx !== -1 ? true : false)
+  const handleTaskAddition = () => {
+    if (Boolean(newTask.name.match(/^(?!\s*$).+/))) {
+      setTask({ name: "", isDone: false });
+      setTasks((prev) => [...prev, newTask]);
+    }
+  };
 
+  const handleTaskState = (e) => {
+    setTask((prev) => ({ ...prev, isDone: e.target.checked }));
+  };
 
-    useEffect(() => {
+  const handleTaskName = (e) => {
+    setTask((prev) => ({ ...prev, name: e.target.value }));
+  };
 
-        if(chosenToDoIdx !== -1){
-            const {name, task} = filteredTodoLists[chosenToDoIdx]
-            setToDoListName(name)
-            setTasks(task)
+  const handleModalClose = () => {
+    setIsModal(false);
+  };
+
+  const handleMessage = (message) => {
+    setMessage(message);
+    setTimeout(() => {
+      setMessage("");
+    }, 3500);
+  };
+
+  const handleClear = () => {
+    setToDoListName("");
+    setTasks([]);
+  };
+
+  const validateToDoListName = () => {
+    if (!Boolean(toDoListName.match(/^(?!\s*$).+/))) {
+      handleMessage("Please insert a new todo list name");
+      return false;
+    }
+    return true;
+  };
+
+  const hadleToDoSave = async () => {
+    let valid = validateToDoListName();
+    if (valid) {
+      const loggedInUser = localStorage.getItem("user");
+      const foundUserToken = JSON.parse(loggedInUser).token;
+
+      const data = {
+        id: chosenToDoId,
+        name: toDoListName,
+        tasks: tasks,
+      };
+
+      const isPost = isNewTodoModal ? true : false;
+
+      try {
+        if (isPost) {
+          await axios.post("to-do-lists", data, {
+            headers: {
+              Authorization: "Bearer " + foundUserToken,
+            },
+          });
+        } else {
+          await axios.put(`to-do-lists/${chosenToDoId}`, data, {
+            headers: {
+              Authorization: "Bearer " + foundUserToken,
+            },
+          });
         }
+      } catch (e) {
+        console.log("Error " + e.response.data);
+      }
 
-    },[filteredTodoLists])
-
-
-    const handleTaskAddition = () => {
-        if(Boolean(newTask.name.match(/^(?!\s*$).+/))){
-            setTask({name:"", isDone:false})
-            setTasks(prev => [...prev, newTask])
-        }
+      dispatch(fetchUserToDoLists({ foundUserToken }));
+      handleClear();
+      handleMessage("New todo list has been added");
     }
+  };
 
-    const handleTaskState = (e) => {
-        setTask(prev => ({...prev, isDone:e.target.checked}))
-    }
+  const handleExistingTaskState = (idx) => {
+    setTasks((prev) =>
+      prev.map((item, i) => {
+        if (i === idx) return { ...item, isDone: !item.isDone };
 
-    const handleTaskName = (e) => {
-        setTask(prev => ({...prev, name:e.target.value}))
-    }
+        return item;
+      })
+    );
+  };
 
+  const handleTaskRemove = (idx) => {
+    const newTasks = tasks.filter((_, i) => i !== idx);
+    setTasks(newTasks);
+  };
 
-    const handleModalClose = () => {
-        setIsModal(false)
-    }
+  return (
+    <div className="modal-container">
+      <div className="modal-content">
+        <input
+          className="new-todo-name"
+          type="text"
+          placeholder="List name"
+          value={toDoListName}
+          onChange={(e) => setToDoListName(e.target.value)}
+        />
 
-    const handleMessage = (message) => {
-        setMessage(message)
-        setTimeout(()=>{
-            setMessage("")
-        }, 3500)
-    }
+        <div className="divider" />
 
-    const handleClear = () => {
-        setToDoListName("")
-        setTasks([])
-    }
+        <div className="todo-tasks">
+          <ul>
+            {tasks.map((task, idx) => (
+              <Task
+                key={idx}
+                task={task}
+                onChange={() => handleExistingTaskState(idx)}
+                remove={() => handleTaskRemove(idx)}
+                disabled={!isNewTodoModal}
+              />
+            ))}
+          </ul>
+          {isNewTodoModal && (
+            <>
+              <div className="new-task-content">
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={newTask.isDone}
+                    onChange={handleTaskState}
+                  />
+                  <span />
+                </label>
 
-    const hadleToDoSave = async () => {
-        if(Boolean(toDoListName.match(/^(?!\s*$).+/))){
-
-            const loggedInUser = localStorage.getItem("user");
-            const foundUserToken = JSON.parse(loggedInUser).token;
-
-            const data = {
-                name:toDoListName,
-                task:tasks
-            }
-
-            try{
-
-                await axios.post("to-do-lists", data, {
-                    headers: {
-                        Authorization:"Bearer " + foundUserToken
-                    }
-                })
-
-            }catch(e){
-                console.log("Error "+e.response.data)
-            }
-            
-            dispatch(fetchUserToDoLists({ foundUserToken }));
-            handleClear();
-            handleMessage("New todo list has been added");
-
-        }else{
-            handleMessage("Please insert a new todo list name");
-        }
-    }
-
-    const handleExistingTaskState = (idx) => {
-        
-        let newTasks = [...tasks]
-        newTasks[idx].isDone = !newTasks[idx].isDone
-        setTasks(newTasks)
-    }
-
-    const handleTaskRemove = (idx) => {
-        const newTasks = tasks.filter((_,i) => i !== idx)
-        setTasks(newTasks)
-    }
-
-    return(
-        <div className="modal-container">
-            <div className="modal-content">
-                <input 
-                    className="new-todo-name" 
-                    type="text" 
-                    placeholder="List name"
-                    value={toDoListName}
-                    onChange={(e) => setToDoListName(e.target.value)}
-                    disabled={disabled}
+                <input
+                  type="text"
+                  placeholder="Task name"
+                  value={newTask.name}
+                  onChange={handleTaskName}
                 />
+              </div>
 
-                <div className="divider"/>
+              <div className="add-new-task-menu">
+                <button
+                  className="cancel-new-todo"
+                  onClick={() => setTask({ name: "", isDone: false })}
+                >
+                  Cancel
+                </button>
 
-                <div className="todo-tasks">
-                    <ul>
-                        {tasks.map((task,idx) => (
-                            <Task
-                                key={idx}
-                                task={task}
-                                onChange={() => handleExistingTaskState(idx)}
-                                remove={() => handleTaskRemove(idx)}
-                                disabled={disabled}
-                            />
-                        ))}
-                    </ul>
-
-                    { !disabled && <>
-                        <div className="new-task-content">
-
-                            <label className="checkbox">
-                                <input
-                                    type="checkbox"
-                                    checked={newTask.isDone}
-                                    onChange={handleTaskState}
-                                />
-                                <span/>
-                            </label>
-
-                            <input 
-                                type="text" 
-                                placeholder="Task name"
-                                value={newTask.name}
-                                onChange={handleTaskName}
-                            />
-                        </div>
-
-                        <div className="add-new-task-menu">
-                            <button 
-                                className="cancel-new-todo" 
-                                onClick={() => setTask({name:"", isDone:false})}
-                            >Cancel</button>
-
-                            <button 
-                                className="add-new-todo" 
-                                onClick={handleTaskAddition}
-                            >Add</button>
-                        </div>
-                    </> }
-                            
-                </div>
-
-                <div className="modal-footer">
-                    <p className="modal-close" onClick={handleModalClose} >Cancel</p>
-                    { Boolean(message) && <p className="modal-message">{message}</p>}
-                    { !disabled && <button className="save-todo-btn"onClick={hadleToDoSave}>Save</button> }
-                </div>
-            </div>
+                <button className="add-new-todo" onClick={handleTaskAddition}>
+                  Add
+                </button>
+              </div>
+            </>
+          )}
         </div>
-    )
-}
+
+        <div className="modal-footer">
+          <p className="modal-close" onClick={handleModalClose}>
+            Cancel
+          </p>
+          {Boolean(message) && <p className="modal-message">{message}</p>}
+
+          <button className="save-todo-btn" onClick={hadleToDoSave}>
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Modal;
